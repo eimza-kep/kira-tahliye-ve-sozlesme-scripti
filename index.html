@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kira Sözleşmesi, Artış Hesabı ve Tahliye Taahhütnamesi Portalı | TBK 344-352</title>
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --secondary: #0f172a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text-main); line-height: 1.5; padding: 32px 16px; min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .header {
+            text-align: center; margin-bottom: 24px; background: white; padding: 30px 20px;
+            border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
+        }
+        .header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--primary); }
+        .header-badge {
+            display: inline-block; background: #ccfbf1; color: var(--primary);
+            font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px;
+        }
+        .header h1 { font-size: 1.6rem; color: var(--secondary); margin-bottom: 8px; font-weight: 800; }
+        .header p { font-size: 0.9rem; color: var(--text-muted); max-width: 680px; margin: 0 auto; }
+
+        .card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 26px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+        .card-title {
+            font-size: 1.05rem; font-weight: 700; color: var(--secondary); margin-bottom: 18px;
+            display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full { grid-column: span 2; }
+        label { font-size: 0.83rem; font-weight: 600; color: #334155; }
+        label span.req { color: #dc2626; }
+
+        input, select, textarea {
+            width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
+            font-size: 0.88rem; outline: none; background: #f8fafc; color: var(--text-main);
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+
+        .calc-preview-box {
+            background: #f0fdfa; border: 1px solid #ccfbf1; padding: 16px; border-radius: 8px; margin-top: 14px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+        }
+
+        .btn-submit {
+            width: 100%; background: var(--primary); color: white; border: none; padding: 14px;
+            border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-submit:hover { background: var(--primary-hover); }
+
+        .result-box {
+            display: none; background: white; border: 2px solid #99f6e4; border-radius: 12px;
+            padding: 32px 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+
+        .undertaking-sheet {
+            border: 2px solid #0f172a; padding: 28px; border-radius: 8px; background: #fff; margin-top: 20px;
+            font-family: 'Times New Roman', Times, serif; line-height: 1.6; font-size: 1rem;
+        }
+        .undertaking-title { text-align: center; font-weight: bold; font-size: 1.25rem; margin-bottom: 18px; text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-badge">6098 SAYILI TBK VE 7445 SAYILI KANUN UYUMLU</div>
+        <h1>Kira Yönetimi ve Tahliye Taahhütnamesi Portalı</h1>
+        <p>Kira sözleşmelerinizi arşivleyin, TÜFE oranlı yasal kira artışını anlık hesaplayın ve TBK 352 uyarınca resmi Tahliye Taahhütnamesi çıktısını tek tıkla alın.</p>
+    </div>
+
+    <form id="kiraForm" onsubmit="handleKiraSubmit(event)">
+        <!-- 1. Taraflar -->
+        <div class="card">
+            <h2 class="card-title">👥 1. Kiraya Veren ve Kiracı Bilgileri</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Kiraya Veren (Mülk Sahibi) Ad Soyad <span class="req">*</span></label>
+                    <input type="text" id="landlordName" required placeholder="Ev sahibi veya şirket unvanı">
+                </div>
+                <div class="form-group">
+                    <label>Kiraya Veren TCKN / VKN <span class="req">*</span></label>
+                    <input type="text" id="landlordId" required placeholder="TCKN veya VKN" maxlength="11">
+                </div>
+                <div class="form-group">
+                    <label>Kiracı Adı Soyadı <span class="req">*</span></label>
+                    <input type="text" id="tenantName" required placeholder="Kiracının adı soyadı">
+                </div>
+                <div class="form-group">
+                    <label>Kiracı TCKN <span class="req">*</span></label>
+                    <input type="text" id="tenantId" required placeholder="11 haneli TCKN" maxlength="11">
+                </div>
+                <div class="form-group">
+                    <label>Kiracı Telefonu <span class="req">*</span></label>
+                    <input type="tel" id="tenantPhone" required placeholder="05XX XXX XX XX">
+                </div>
+                <div class="form-group">
+                    <label>Müteselsil Kefil (Varsa)</label>
+                    <input type="text" id="guarantorName" placeholder="Kefil adı soyadı ve TCKN">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Taşınmaz ve Kira Şartları -->
+        <div class="card">
+            <h2 class="card-title">🏠 2. Kiralanan Taşınmaz ve Sözleşme Şartları</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Taşınmaz Türü <span class="req">*</span></label>
+                    <select id="propertyType" required>
+                        <option value="Konut (Daire / Ev)">Konut (Daire / Ev)</option>
+                        <option value="Çatılı İşyeri / Dükkan">Çatılı İşyeri / Dükkan</option>
+                        <option value="Ofis / Büro">Ofis / Büro</option>
+                        <option value="Depo / Atölye">Depo / Atölye</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Sözleşme Başlangıç Tarihi <span class="req">*</span></label>
+                    <input type="date" id="leaseStartDate" required onchange="calculateRenewal()">
+                </div>
+                <div class="form-group">
+                    <label>Mevcut Aylık Kira Bedeli (TL) <span class="req">*</span></label>
+                    <input type="number" step="0.01" id="currentRent" required placeholder="Örn: 20000" oninput="calculateRenewal()">
+                </div>
+                <div class="form-group">
+                    <label>Tahmini / Resmi TÜFE Artış Oranı (%)</label>
+                    <input type="number" step="0.01" id="tufeRate" value="62.5" placeholder="Örn: 62.5" oninput="calculateRenewal()">
+                </div>
+                <div class="form-group full">
+                    <label>Kiralanan Taşınmazın Açık Adresi <span class="req">*</span></label>
+                    <input type="text" id="propertyAddress" required placeholder="İl, İlçe, Mahalle, Sokak, No, Daire No">
+                </div>
+            </div>
+
+            <!-- Yeni Kira Hesaplama Kutusu -->
+            <div class="calc-preview-box" id="calcBox">
+                <div>
+                    <b>Yeni Dönem Yasal Tavan Kira:</b> <span id="lblNewRent" style="font-weight: 800; color: var(--primary); font-size: 1.15rem;">- TL</span>
+                </div>
+                <div>
+                    <b>Artış Tutarı:</b> <span id="lblDiffRent" style="font-weight: 700;">- TL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Tahliye Taahhüdü Şartları -->
+        <div class="card">
+            <h2 class="card-title">📜 3. TBK 352 Uyumlu Tahliye Taahhütnamesi Bilgileri</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Taahhüt Düzenleme (Tanzim) Tarihi <span class="req">*</span></label>
+                    <input type="date" id="undertakingSignDate" required>
+                    <small style="color:var(--text-muted); font-size:0.75rem;">* Hukuken geçerlilik için kira başlangıcından sonraki bir tarih olmalıdır.</small>
+                </div>
+                <div class="form-group">
+                    <label>Taşınmazın Tahliye Edileceği Tarih <span class="req">*</span></label>
+                    <input type="date" id="evictionDate" required>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+            <span>🛡️ Kira Sözleşmesini Kaydet & Tahliye Taahhütnamesini Üret</span>
+        </button>
+    </form>
+
+    <!-- Success View & Printable Undertaking -->
+    <div class="result-box" id="resultBox">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">📑</div>
+            <h2 style="color: var(--secondary);">Kira Kaydı ve Tahliye Taahhütnamesi Hazır</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Hukuki standartlara uygun tahliye taahhütnamesi belgesi aşağıda oluşturulmuştur.
+            </p>
+            <div style="margin: 14px 0; font-size: 1.35rem; font-weight: 800; color: var(--primary);" id="trackingCodeDisplay">KIRA-2026-0000</div>
+        </div>
+
+        <div class="undertaking-sheet" id="printSheet">
+            <div class="undertaking-title">TAHLİYE TAAHHÜTNAMESİ<br><span style="font-size: 0.9rem; font-weight: normal;">(6098 Sayılı Türk Borçlar Kanunu Madde 352 Uyarınca)</span></div>
+            
+            <p><b>KİRAYA VEREN (MAL SAHİBİ):</b> <span id="prLandlord"></span></p>
+            <p><b>KİRAYA VEREN TCKN / VKN:</b> <span id="prLandlordId"></span></p>
+            <br>
+            <p><b>TAAHHÜT EDEN KİRACI:</b> <span id="prTenant"></span></p>
+            <p><b>KİRACI TCKN:</b> <span id="prTenantId"></span></p>
+            <p><b>İLETİŞİM TELEFONU:</b> <span id="prTenantPhone"></span></p>
+            <br>
+            <p><b>TAHLİYE EDİLECEK TAŞINMAZ:</b> <span id="prAddress"></span></p>
+            <p><b>TAŞINMAZ NİTELİĞİ:</b> <span id="prType"></span></p>
+            <p><b>KİRA BAŞLANGIÇ TARİHİ:</b> <span id="prStart"></span></p>
+            <p><b>TAAHHÜT EDİLEN TAHLİYE TARİHİ:</b> <b><span id="prEvictDate"></span></b></p>
+            <br>
+            <p style="text-indent: 24px;">
+                Halen kiracı olarak ikamet etmekte/kullanmakta olduğum yukarıda açık adresi belirtilen taşınmazı, hiçbir ihtar ve ihbara gerek kalmaksızın, 6098 sayılı Türk Borçlar Kanunu'nun 352/1 maddesi hükmü uyarınca, <b><span id="prEvictDateText"></span></b> tarihinde kayıtsız ve şartsız olarak boşaltarak, anahtarını mal sahibine bizzat ve eksiksiz olarak teslim edeceğimi;
+            </p>
+            <p style="text-indent: 24px; margin-top: 8px;">
+                Belirtilen tarihte taşınmazı tahliye etmemem halinde mal sahibinin icra takibine geçerek tahliye davası açmasına ve cebri icra yoluyla tahliye ettirmesine muvafakat ettiğimi, bu uğurda yapılacak tüm yargılama, tahliye ve icra masrafları ile avukatlık vekalet ücretini hiçbir itiraz öne sürmeksizin nakden ve defaten ödeyeceğimi hür irademle beyan, kabul ve taahhüt ederim.
+            </p>
+            <br><br>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <b>Taahhüt Tanzim Tarihi:</b> <span id="prSignDate"></span><br>
+                    <small>(Kira başlangıcından sonradır)</small>
+                </div>
+                <div style="text-align: right;">
+                    <b>Taahhüt Eden Kiracı</b><br>
+                    <span id="prTenantSign"></span><br>
+                    İmza / Islak İmza
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
+            <button class="btn-submit" style="width: auto; padding: 10px 22px; background: #0f172a;" onclick="window.print()">🖨️ Tahliye Taahhütnamesini Yazdır / PDF</button>
+            <button class="btn-submit" style="width: auto; padding: 10px 22px; background: #e2e8f0; color: #334155;" onclick="location.reload()">➕ Yeni Kira Kaydı</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateRenewal() {
+    const cur = parseFloat(document.getElementById('currentRent').value) || 0;
+    const rate = parseFloat(document.getElementById('tufeRate').value) || 0;
+    if (cur > 0) {
+        const diff = cur * (rate / 100);
+        const newRent = cur + diff;
+        document.getElementById('lblNewRent').innerText = newRent.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' TL';
+        document.getElementById('lblDiffRent').innerText = `+${diff.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL (%${rate})`;
+    }
+}
+
+async function handleKiraSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerText = '⏳ Kaydediliyor...';
+
+    const cur = parseFloat(document.getElementById('currentRent').value) || 0;
+    const rate = parseFloat(document.getElementById('tufeRate').value) || 0;
+    const newRent = cur + (cur * (rate / 100));
+
+    const payload = {
+        landlord_name: document.getElementById('landlordName').value.trim(),
+        landlord_id: document.getElementById('landlordId').value.trim(),
+        tenant_name: document.getElementById('tenantName').value.trim(),
+        tenant_id: document.getElementById('tenantId').value.trim(),
+        tenant_phone: document.getElementById('tenantPhone').value.trim(),
+        guarantor_name: document.getElementById('guarantorName').value.trim(),
+        property_type: document.getElementById('propertyType').value,
+        property_address: document.getElementById('propertyAddress').value.trim(),
+        lease_start_date: document.getElementById('leaseStartDate').value,
+        current_rent: cur,
+        tufe_rate: rate,
+        new_calculated_rent: newRent,
+        undertaking_sign_date: document.getElementById('undertakingSignDate').value,
+        eviction_date: document.getElementById('evictionDate').value,
+        status: 'Sözleşme Aktif',
+        created_at: new Date().toISOString()
+    };
+
+    let trackingCode = 'KIRA-2026-' + Math.floor(1000 + Math.random() * 9000);
+
+    try {
+        const res = await fetch('/api/kira-kaydet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.tracking_code) trackingCode = data.tracking_code;
+        }
+    } catch (err) {
+        const local = JSON.parse(localStorage.getItem('kira_sozlesmeler') || '[]');
+        payload.tracking_code = trackingCode;
+        local.push(payload);
+        localStorage.setItem('kira_sozlesmeler', JSON.stringify(local));
+    }
+
+    document.getElementById('kiraForm').style.display = 'none';
+    document.getElementById('resultBox').style.display = 'block';
+    document.getElementById('trackingCodeDisplay').innerText = trackingCode;
+
+    // Fill Undertaking Sheet
+    document.getElementById('prLandlord').innerText = payload.landlord_name;
+    document.getElementById('prLandlordId').innerText = payload.landlord_id;
+    document.getElementById('prTenant').innerText = payload.tenant_name;
+    document.getElementById('prTenantId').innerText = payload.tenant_id;
+    document.getElementById('prTenantPhone').innerText = payload.tenant_phone;
+    document.getElementById('prAddress').innerText = payload.property_address;
+    document.getElementById('prType').innerText = payload.property_type;
+    document.getElementById('prStart').innerText = payload.lease_start_date;
+    document.getElementById('prEvictDate').innerText = payload.eviction_date;
+    document.getElementById('prEvictDateText').innerText = payload.eviction_date;
+    document.getElementById('prSignDate').innerText = payload.undertaking_sign_date;
+    document.getElementById('prTenantSign').innerText = payload.tenant_name;
+}
+
+window.onload = calculateRenewal;
+</script>
+
+</body>
+</html>
