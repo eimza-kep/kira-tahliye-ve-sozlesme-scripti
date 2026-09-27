@@ -76,6 +76,19 @@ python scripts/test_kira.py
 
 ---
 
+## 🌐 LegalTech & E-Dönüşüm Açık Kaynak Ekosistemi
+
+Bu kira yönetim ve tahliye portali, [@eimza-kep](https://github.com/eimza-kep) açık kaynak ekosisteminin gayrimenkul hukuku modülüdür. İlgili diğer araçlar:
+
+* ⚖️ [avukat-arabuluculuk-basvuru-scripti](https://github.com/eimza-kep/avukat-arabuluculuk-basvuru-scripti) - 7445 sayılı Kanun uyarınca kira tahliye ve tespit davalarında zorunlu arabuluculuk portali.
+* 📊 [avukat-hukuk-excel-hesaplamalari](https://github.com/eimza-kep/avukat-hukuk-excel-hesaplamalari) - Kira artış TÜFE oranları, faiz ve tahliye icra masraf hesaplayıcıları.
+* 📨 [kep-adresi-dogrulayici](https://github.com/eimza-kep/kep-adresi-dogrulayici) - Kira fesih ve temerrüt ihtarnamelerinde resmi KEP adresi sözdizim doğrulayıcı.
+* 📄 [python-pdf-eimza-dogrulayici](https://github.com/eimza-kep/python-pdf-eimza-dogrulayici) - Dijital imzalı kira sözleşmeleri ve tahliye taahhütnameleri doğrulama kütüphanesi.
+* 🌟 [awesome-turkiye-e-donusum](https://github.com/eimza-kep/awesome-turkiye-e-donusum) - Türkiye e-Dönüşüm açık kaynak araçları ve kütüphaneleri kürasyonu.
+
+---
+
 ## ⚖️ Lisans
 
 Bu proje [MIT Lisansı](LICENSE) kapsamında açık kaynak olarak sunulmuştur.
+
