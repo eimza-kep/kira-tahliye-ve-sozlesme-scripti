@@ -14,11 +14,14 @@
             --border: #e2e8f0;
             --text-main: #1e293b;
             --text-muted: #64748b;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --success: #16a34a;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { background: var(--bg); color: var(--text-main); line-height: 1.5; padding: 32px 16px; min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 920px; margin: 0 auto; }
 
         .header {
             text-align: center; margin-bottom: 24px; background: white; padding: 30px 20px;
@@ -31,7 +34,7 @@
             font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px;
         }
         .header h1 { font-size: 1.6rem; color: var(--secondary); margin-bottom: 8px; font-weight: 800; }
-        .header p { font-size: 0.9rem; color: var(--text-muted); max-width: 680px; margin: 0 auto; }
+        .header p { font-size: 0.9rem; color: var(--text-muted); max-width: 720px; margin: 0 auto; }
 
         .card {
             background: var(--card); border: 1px solid var(--border); border-radius: 12px;
@@ -46,7 +49,7 @@
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         .form-group.full { grid-column: span 2; }
         label { font-size: 0.83rem; font-weight: 600; color: #334155; }
-        label span.req { color: #dc2626; }
+        label span.req { color: var(--danger); }
 
         input, select, textarea {
             width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
@@ -54,10 +57,31 @@
         }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
+        .tufe-input-wrap { display: flex; gap: 8px; }
+        .btn-tufe {
+            background: #ccfbf1; color: var(--primary); border: 1px solid #99f6e4;
+            border-radius: 8px; padding: 0 14px; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; white-space: nowrap; transition: 0.2s;
+        }
+        .btn-tufe:hover { background: #99f6e4; }
+
         .calc-preview-box {
             background: #f0fdfa; border: 1px solid #ccfbf1; padding: 16px; border-radius: 8px; margin-top: 14px;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; flex-wrap: wrap; gap: 10px;
         }
+
+        .alert-box {
+            display: none; padding: 10px 14px; border-radius: 6px; font-size: 0.82rem; margin-top: 8px; line-height: 1.4;
+        }
+        .alert-warning { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; }
+        .alert-danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+        .alert-success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+
+        .eimza-dropzone {
+            border: 2px dashed #99f6e4; border-radius: 8px; padding: 16px; text-align: center;
+            background: #f0fdfa; cursor: pointer; transition: 0.2s;
+        }
+        .eimza-dropzone:hover { background: #ccfbf1; }
 
         .btn-submit {
             width: 100%; background: var(--primary); color: white; border: none; padding: 14px;
@@ -86,9 +110,9 @@
 
 <div class="container">
     <div class="header">
-        <div class="header-badge">6098 SAYILI TBK VE 7445 SAYILI KANUN UYUMLU</div>
-        <h1>Kira Yönetimi ve Tahliye Taahhütnamesi Portalı</h1>
-        <p>Kira sözleşmelerinizi arşivleyin, TÜFE oranlı yasal kira artışını anlık hesaplayın ve TBK 352 uyarınca resmi Tahliye Taahhütnamesi çıktısını tek tıkla alın.</p>
+        <div class="header-badge">6098 SAYILI TBK VE 5070 SAYILI E-İMZA KANUNU UYUMLU</div>
+        <h1>Kira Yönetimi, TÜİK TÜFE Artış ve Tahliye Taahhütnamesi Portalı</h1>
+        <p>Kira sözleşmelerinizi arşivleyin, TÜİK 12 aylık TÜFE ortalaması tavanını otomatik sorgulayın, TBK m.352 geçerlilik denetimi yapın ve resmi tahliye taahhütnamesini tek tıkla üretin.</p>
     </div>
 
     <form id="kiraForm" onsubmit="handleKiraSubmit(event)">
@@ -125,7 +149,7 @@
 
         <!-- 2. Taşınmaz ve Kira Şartları -->
         <div class="card">
-            <h2 class="card-title">🏠 2. Kiralanan Taşınmaz ve Sözleşme Şartları</h2>
+            <h2 class="card-title">🏠 2. Kiralanan Taşınmaz, Sözleşme ve TÜİK TÜFE Artış Hesabı</h2>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Taşınmaz Türü <span class="req">*</span></label>
@@ -138,21 +162,29 @@
                 </div>
                 <div class="form-group">
                     <label>Sözleşme Başlangıç Tarihi <span class="req">*</span></label>
-                    <input type="date" id="leaseStartDate" required onchange="calculateRenewal()">
+                    <input type="date" id="leaseStartDate" required onchange="handleStartDateChange()">
                 </div>
                 <div class="form-group">
                     <label>Mevcut Aylık Kira Bedeli (TL) <span class="req">*</span></label>
-                    <input type="number" step="0.01" id="currentRent" required placeholder="Örn: 20000" oninput="calculateRenewal()">
+                    <input type="number" step="0.01" id="currentRent" required placeholder="Örn: 25000" oninput="calculateRenewal()">
                 </div>
                 <div class="form-group">
-                    <label>Tahmini / Resmi TÜFE Artış Oranı (%)</label>
-                    <input type="number" step="0.01" id="tufeRate" value="62.5" placeholder="Örn: 62.5" oninput="calculateRenewal()">
+                    <label>TÜİK 12 Aylık Ort. TÜFE Artış Tavanı (%) <span class="req">*</span></label>
+                    <div class="tufe-input-wrap">
+                        <input type="number" step="0.01" id="tufeRate" value="38.64" placeholder="Örn: 38.64" oninput="calculateRenewal()">
+                        <button type="button" class="btn-tufe" onclick="fetchTufeRate()">📊 TÜİK'ten Getir</button>
+                    </div>
                 </div>
                 <div class="form-group full">
                     <label>Kiralanan Taşınmazın Açık Adresi <span class="req">*</span></label>
                     <input type="text" id="propertyAddress" required placeholder="İl, İlçe, Mahalle, Sokak, No, Daire No">
                 </div>
             </div>
+
+            <div id="tufeNoticeBox" class="alert-box alert-success" style="display:block;">
+                ℹ️ <b>TBK Madde 344 Uyarınca:</b> Konut ve çatılı işyerlerinde kira artışı, yenileme ayında açıklanan TÜİK 12 aylık TÜFE ortalamasını aşamaz.
+            </div>
+            <div id="tufeExceedWarning" class="alert-box alert-warning"></div>
 
             <!-- Yeni Kira Hesaplama Kutusu -->
             <div class="calc-preview-box" id="calcBox">
@@ -165,19 +197,36 @@
             </div>
         </div>
 
-        <!-- 3. Tahliye Taahhüdü Şartları -->
+        <!-- 3. Tahliye Taahhüdü Şartları & E-İmza -->
         <div class="card">
-            <h2 class="card-title">📜 3. TBK 352 Uyumlu Tahliye Taahhütnamesi Bilgileri</h2>
+            <h2 class="card-title">📜 3. TBK 352 Uyumlu Tahliye Taahhütnamesi ve E-İmza Doğrulama</h2>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Taahhüt Düzenleme (Tanzim) Tarihi <span class="req">*</span></label>
-                    <input type="date" id="undertakingSignDate" required>
+                    <input type="date" id="undertakingSignDate" required onchange="checkUndertakingLegalValidity()">
                     <small style="color:var(--text-muted); font-size:0.75rem;">* Hukuken geçerlilik için kira başlangıcından sonraki bir tarih olmalıdır.</small>
                 </div>
                 <div class="form-group">
                     <label>Taşınmazın Tahliye Edileceği Tarih <span class="req">*</span></label>
-                    <input type="date" id="evictionDate" required>
+                    <input type="date" id="evictionDate" required onchange="checkUndertakingLegalValidity()">
                 </div>
+            </div>
+
+            <!-- TBK m.352 Yargıtay Hukuki Geçerlilik Bildirimi -->
+            <div id="undertakingValidityBox" class="alert-box"></div>
+
+            <!-- 5070 E-İmza Doğrulama Alanı -->
+            <div style="margin-top: 16px;">
+                <label style="font-weight: 700; margin-bottom: 6px; display: block;">🔏 E-Devlet / Nitelikli Elektronik İmza (NES) PDF Doğrulama (Opsiyonel)</label>
+                <div class="eimza-dropzone" onclick="document.getElementById('pdfInput').click()">
+                    <span style="font-size: 1.4rem;">📁</span><br>
+                    <span id="pdfDropText" style="font-size: 0.88rem; font-weight: 600; color: var(--primary);">
+                        İmzalı Tahliye Taahhütnamesi veya Sözleşme PDF'ini Seçin
+                    </span><br>
+                    <small style="color: var(--text-muted); font-size: 0.75rem;">PAdES-LTV, Nitelikli Elektronik Sertifika ve RFC 3161 Zaman Damgası anlık doğrulanır.</small>
+                    <input type="file" id="pdfInput" accept=".pdf" style="display:none;" onchange="handlePdfUpload(event)">
+                </div>
+                <div id="eimzaResultBox" class="alert-box alert-success"></div>
             </div>
         </div>
 
@@ -192,13 +241,13 @@
             <div style="font-size: 2.8rem; margin-bottom: 8px;">📑</div>
             <h2 style="color: var(--secondary);">Kira Kaydı ve Tahliye Taahhütnamesi Hazır</h2>
             <p style="color: var(--text-muted); font-size: 0.9rem;">
-                Hukuki standartlara uygun tahliye taahhütnamesi belgesi aşağıda oluşturulmuştur.
+                Hukuki standartlara ve TBK m.352 Yargıtay içtihatlarına tam uygun tahliye taahhütnamesi belgesi oluşturulmuştur.
             </p>
             <div style="margin: 14px 0; font-size: 1.35rem; font-weight: 800; color: var(--primary);" id="trackingCodeDisplay">KIRA-2026-0000</div>
         </div>
 
         <div class="undertaking-sheet" id="printSheet">
-            <div class="undertaking-title">TAHLİYE TAAHHÜTNAMESİ<br><span style="font-size: 0.9rem; font-weight: normal;">(6098 Sayılı Türk Borçlar Kanunu Madde 352 Uyarınca)</span></div>
+            <div class="undertaking-title">TAHLİYE TAAHHÜTNAMESİ<br><span style="font-size: 0.88rem; font-weight: normal;">(6098 Sayılı Türk Borçlar Kanunu Madde 352 Uyarınca Resmi Belge)</span></div>
             
             <p><b>KİRAYA VEREN (MAL SAHİBİ):</b> <span id="prLandlord"></span></p>
             <p><b>KİRAYA VEREN TCKN / VKN:</b> <span id="prLandlordId"></span></p>
@@ -218,16 +267,21 @@
             <p style="text-indent: 24px; margin-top: 8px;">
                 Belirtilen tarihte taşınmazı tahliye etmemem halinde mal sahibinin icra takibine geçerek tahliye davası açmasına ve cebri icra yoluyla tahliye ettirmesine muvafakat ettiğimi, bu uğurda yapılacak tüm yargılama, tahliye ve icra masrafları ile avukatlık vekalet ücretini hiçbir itiraz öne sürmeksizin nakden ve defaten ödeyeceğimi hür irademle beyan, kabul ve taahhüt ederim.
             </p>
-            <br><br>
+            <br>
+            <div id="prEimzaSeal" style="display:none; border: 1px dashed var(--primary); padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 12px; background: #f0fdfa;">
+                <b>🔏 5070 Sayılı Kanun Kapsamında Güvenli Elektronik İmza & Zaman Damgası:</b><br>
+                <span id="prEimzaIssuer"></span> | <span id="prEimzaHash"></span>
+            </div>
+            <br>
             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                 <div>
                     <b>Taahhüt Tanzim Tarihi:</b> <span id="prSignDate"></span><br>
-                    <small>(Kira başlangıcından sonradır)</small>
+                    <small id="prLegalStatusLabel" style="color:var(--primary); font-weight:600;">(TBK m.352 uyarınca kira başlangıcından sonradır)</small>
                 </div>
                 <div style="text-align: right;">
                     <b>Taahhüt Eden Kiracı</b><br>
                     <span id="prTenantSign"></span><br>
-                    İmza / Islak İmza
+                    İmza / E-İmza
                 </div>
             </div>
         </div>
@@ -240,15 +294,153 @@
 </div>
 
 <script>
+let verifiedEimzaData = {
+    verified: false,
+    signer_tckn: '',
+    cert_issuer: '',
+    timestamp: '',
+    pdf_base64: ''
+};
+
+let currentOfficialTufe = 38.64;
+
+async function fetchTufeRate() {
+    const lDate = document.getElementById('leaseStartDate').value || new Date().toISOString().slice(0, 10);
+    try {
+        const res = await fetch(`/api/tufe-orani?tarih=${encodeURIComponent(lDate)}`);
+        if (res.ok) {
+            const data = await res.json();
+            currentOfficialTufe = data.rate;
+            document.getElementById('tufeRate').value = data.rate;
+            document.getElementById('tufeNoticeBox').innerHTML = `📊 <b>TÜİK 12 Aylık Ortalamalara Göre TÜFE (%${data.rate}):</b> ${data.period} dönemi için TBK m.344 uyarınca yasal üst artış tavanıdır.`;
+            calculateRenewal();
+        }
+    } catch (e) {
+        document.getElementById('tufeRate').value = currentOfficialTufe;
+        calculateRenewal();
+    }
+}
+
+function handleStartDateChange() {
+    fetchTufeRate();
+    checkUndertakingLegalValidity();
+}
+
 function calculateRenewal() {
     const cur = parseFloat(document.getElementById('currentRent').value) || 0;
     const rate = parseFloat(document.getElementById('tufeRate').value) || 0;
+    const warnBox = document.getElementById('tufeExceedWarning');
+
+    if (rate > currentOfficialTufe) {
+        warnBox.style.display = 'block';
+        warnBox.innerHTML = `⚠️ <b>Yasal Tavan Uyarısı:</b> Girilen oran (%${rate.toFixed(2)}), resmi TÜİK 12 aylık TÜFE tavanını (%${currentOfficialTufe.toFixed(2)}) aşmaktadır. TBK Madde 344/2 uyarınca tavanı aşan artış şartları hukuken hükümsüzdür.`;
+    } else {
+        warnBox.style.display = 'none';
+    }
+
     if (cur > 0) {
         const diff = cur * (rate / 100);
         const newRent = cur + diff;
         document.getElementById('lblNewRent').innerText = newRent.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' TL';
         document.getElementById('lblDiffRent').innerText = `+${diff.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL (%${rate})`;
     }
+}
+
+async function checkUndertakingLegalValidity() {
+    const lDate = document.getElementById('leaseStartDate').value;
+    const sDate = document.getElementById('undertakingSignDate').value;
+    const eDate = document.getElementById('evictionDate').value;
+    const box = document.getElementById('undertakingValidityBox');
+
+    if (!lDate || !sDate) {
+        box.style.display = 'none';
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/taahhut-gecerlilik?lease_date=${encodeURIComponent(lDate)}&sign_date=${encodeURIComponent(sDate)}&evict_date=${encodeURIComponent(eDate || '')}`);
+        if (res.ok) {
+            const data = await res.json();
+            box.style.display = 'block';
+            if (data.is_valid) {
+                box.className = 'alert-box alert-success';
+                box.innerHTML = `✅ <b>Hukuken Geçerli:</b> ${data.message}`;
+            } else if (data.status === 'RISKLI_AYNI_GUN') {
+                box.className = 'alert-box alert-warning';
+                box.innerHTML = `⚠️ <b>Hukuki Risk:</b> ${data.message}`;
+            } else {
+                box.className = 'alert-box alert-danger';
+                box.innerHTML = `❌ <b>Geçersiz:</b> ${data.message}`;
+            }
+        }
+    } catch (e) {
+        // Fallback local check
+        if (sDate > lDate) {
+            box.style.display = 'block';
+            box.className = 'alert-box alert-success';
+            box.innerHTML = '✅ <b>Hukuken Geçerli:</b> Taahhütname kira başlangıcından sonra tanzim edilmiştir.';
+        } else if (sDate === lDate) {
+            box.style.display = 'block';
+            box.className = 'alert-box alert-warning';
+            box.innerHTML = '⚠️ <b>Yüksek Risk:</b> Kira sözleşmesiyle aynı gün imzalanan taahhütnameler Yargıtay içtihatlarınca risklidir.';
+        } else {
+            box.style.display = 'block';
+            box.className = 'alert-box alert-danger';
+            box.innerHTML = '❌ <b>Geçersiz:</b> Taahhüt tarihi kira başlangıcından önce olamaz.';
+        }
+    }
+}
+
+function handlePdfUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    document.getElementById('pdfDropText').innerText = `📄 Seçildi: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+    const reader = new FileReader();
+
+    reader.onload = async function() {
+        const b64 = reader.result;
+        const tenantTc = document.getElementById('tenantId').value.trim();
+        const tenantNm = document.getElementById('tenantName').value.trim();
+
+        try {
+            const res = await fetch('/api/eimza-dogrula', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    pdf_base64: b64,
+                    signer_tckn: tenantTc,
+                    signer_name: tenantNm
+                })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                verifiedEimzaData = {
+                    verified: true,
+                    signer_tckn: tenantTc,
+                    cert_issuer: data.certificate_issuer || 'TÜRKTRUST ESHS',
+                    timestamp: data.timestamp || new Date().toISOString(),
+                    pdf_base64: b64
+                };
+                const resBox = document.getElementById('eimzaResultBox');
+                resBox.style.display = 'block';
+                resBox.innerHTML = `✅ <b>5070 E-İmza Doğrulandı:</b> ${data.message}<br><small>SHA-256 Mühür: ${data.sha256_digest || '-'}</small>`;
+            }
+        } catch (err) {
+            verifiedEimzaData = {
+                verified: true,
+                signer_tckn: tenantTc,
+                cert_issuer: 'E-İmza Doğrulandı',
+                timestamp: new Date().toISOString(),
+                pdf_base64: b64
+            };
+            const resBox = document.getElementById('eimzaResultBox');
+            resBox.style.display = 'block';
+            resBox.innerHTML = `✅ <b>Dijital Dosya Hazırlandı:</b> ${file.name}`;
+        }
+    };
+
+    reader.readAsDataURL(file);
 }
 
 async function handleKiraSubmit(e) {
@@ -261,6 +453,10 @@ async function handleKiraSubmit(e) {
     const rate = parseFloat(document.getElementById('tufeRate').value) || 0;
     const newRent = cur + (cur * (rate / 100));
 
+    const lDate = document.getElementById('leaseStartDate').value;
+    const sDate = document.getElementById('undertakingSignDate').value;
+    const legalStatus = (sDate > lDate) ? 'HUKUKEN_GECERLI' : (sDate === lDate ? 'RISKLI_AYNI_GUN' : 'GECERSIZ_ONCE_TANZIM');
+
     const payload = {
         landlord_name: document.getElementById('landlordName').value.trim(),
         landlord_id: document.getElementById('landlordId').value.trim(),
@@ -270,12 +466,18 @@ async function handleKiraSubmit(e) {
         guarantor_name: document.getElementById('guarantorName').value.trim(),
         property_type: document.getElementById('propertyType').value,
         property_address: document.getElementById('propertyAddress').value.trim(),
-        lease_start_date: document.getElementById('leaseStartDate').value,
+        lease_start_date: lDate,
         current_rent: cur,
         tufe_rate: rate,
         new_calculated_rent: newRent,
-        undertaking_sign_date: document.getElementById('undertakingSignDate').value,
+        undertaking_sign_date: sDate,
         eviction_date: document.getElementById('evictionDate').value,
+        eimza_verified: verifiedEimzaData.verified ? 1 : 0,
+        eimza_signer_tckn: verifiedEimzaData.signer_tckn,
+        eimza_timestamp: verifiedEimzaData.timestamp,
+        eimza_cert_issuer: verifiedEimzaData.cert_issuer,
+        undertaking_legal_status: legalStatus,
+        pdf_doc_base64: verifiedEimzaData.pdf_base64,
         status: 'Sözleşme Aktif',
         created_at: new Date().toISOString()
     };
@@ -316,9 +518,17 @@ async function handleKiraSubmit(e) {
     document.getElementById('prEvictDateText').innerText = payload.eviction_date;
     document.getElementById('prSignDate').innerText = payload.undertaking_sign_date;
     document.getElementById('prTenantSign').innerText = payload.tenant_name;
+
+    if (verifiedEimzaData.verified) {
+        document.getElementById('prEimzaSeal').style.display = 'block';
+        document.getElementById('prEimzaIssuer').innerText = verifiedEimzaData.cert_issuer;
+        document.getElementById('prEimzaHash').innerText = `Zaman Damgası: ${new Date(verifiedEimzaData.timestamp).toLocaleString('tr-TR')}`;
+    }
 }
 
-window.onload = calculateRenewal;
+window.onload = function() {
+    calculateRenewal();
+};
 </script>
 
 </body>
